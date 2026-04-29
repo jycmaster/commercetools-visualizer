@@ -1,0 +1,19 @@
+# Netlify config for the commercetools-visualizer custom Merchant Center app.
+# Notes:
+# - This file is read by Netlify when the site's base is set to `visualizer/`.
+# - Build command wraps `yarn install` with Socket Firewall (sfw) so every
+#   dependency artifact is screened before it hits the build machine. This is
+#   policy for all Jaycar deploys after the PolinRider supply-chain incident.
+# - `mc-scripts compile-html` bakes CLOUD_IDENTIFIER / INITIAL_PROJECT_KEY /
+#   APPLICATION_URL / CUSTOM_APPLICATION_ID / ENTRY_POINT_URI_PATH into
+#   index.html, so those env vars must be set in Netlify before the build runs.
+
+[build]
+  command = "npm install -g sfw && sfw yarn install --frozen-lockfile && yarn build && yarn compile-html"
+  publish = "public"
+
+# SPA fallback so client-side routes work when MC iframes the app.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
